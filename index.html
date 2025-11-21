@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>FRLP Goal Calculator</title>
+<style>
+    :root {
+        --bg: #f3f4f6;
+        --card-bg: #ffffff;
+        --primary: #1f4b99;
+        --primary-soft: #e5edff;
+        --text-main: #111827;
+        --text-muted: #6b7280;
+        --border: #d1d5db;
+        --success: #15803d;
+        --warning: #b91c1c;
+        --radius-lg: 14px;
+        --shadow-soft: 0 10px 25px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg);
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: var(--text-main);
+        padding: 24px;
+    }
+
+    .card {
+        width: 100%;
+        max-width: 520px;
+        background: var(--card-bg);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-soft);
+        padding: 24px 28px 26px;
+    }
+
+    .card-header {
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 14px;
+        margin-bottom: 18px;
+    }
+
+    .title {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 650;
+        color: var(--primary);
+        letter-spacing: 0.01em;
+    }
+
+    .subtitle {
+        margin: 4px 0 0;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px 18px;
+        margin-top: 6px;
+        margin-bottom: 18px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--text-muted);
+    }
+
+    input[type="number"] {
+        width: 100%;
+        padding: 8px 9px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        font-size: 0.95rem;
+        outline: none;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    input[type="number"]:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.25);
+    }
+
+    .results-card {
+        margin-top: 4px;
+        padding: 14px 14px 12px;
+        border-radius: 10px;
+        background: var(--primary-soft);
+        border: 1px solid rgba(37, 99, 235, 0.18);
+    }
+
+    .results-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 8px;
+    }
+
+    .results-title {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--primary);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    .results-tag {
+    font-size: 0.78rem;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: #fee2e2;  
+    color: #b91c1c;        
+    font-weight: 700;      
+    letter-spacing: 0.03em;
+    border: 1px solid #fecaca; 
+}
+
+    .results-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px 18px;
+        font-size: 0.9rem;
+    }
+
+    .result-item-label {
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--text-muted);
+        margin-bottom: 1px;
+    }
+
+    .result-item-value {
+        font-weight: 600;
+    }
+
+   .percent-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-size: 1.35rem;           
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    max-width: 100%;              
+    flex-wrap: wrap;              
+    box-sizing: border-box;      
+}
+
+.result-item-value {
+    word-wrap: break-word;
+}
+
+
+    .percent-pill.ok {
+        background: #dcfce7;
+        color: var(--success);
+    }
+
+    .percent-pill.warn {
+        background: #fee2e2;
+        color: var(--warning);
+    }
+
+    .note {
+        margin-top: 10px;
+        font-size: 0.78rem;
+        color: var(--text-muted);
+    }
+
+    @media (max-width: 550px) {
+        .card {
+            padding: 18px 16px 20px;
+        }
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+        .results-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+</head>
+<body>
+
+<div class="card">
+    <div class="card-header">
+        <h1 class="title">FRLP Goal Tracker</h1>
+        <p class="subtitle">Enter current numbers to see progress toward your enrollment goal.</p>
+    </div>
+
+    <div class="form-grid">
+        <div class="form-group">
+            <label for="total">Total Enrollment (Base)</label>
+            <input type="number" id="total" value="19385" min="0" step="1">
+        </div>
+
+        <div class="form-group">
+            <label for="goal">Goal (%)</label>
+            <input type="number" id="goal" value="90" min="0" max="100" step="0.1">
+        </div>
+
+        <div class="form-group">
+            <label for="current">Current Enrollment</label>
+            <input type="number" id="current" value="17215" min="0" step="1">
+        </div>
+
+        <div class="form-group">
+            <label for="target">Target Count (Auto)</label>
+            <input type="number" id="target" readonly>
+        </div>
+    </div>
+
+    <div class="results-card">
+        <div class="results-header">
+            <span class="results-title">Current Status</span>
+            <span class="results-tag" id="statusTag">Below Goal</span>
+        </div>
+
+        <div class="results-grid">
+            <div>
+                <div class="result-item-label">Current Percentage</div>
+                <div class="result-item-value">
+                    <span id="percentPill" class="percent-pill warn">
+                        <span id="percentText">0%</span>
+                    </span>
+                </div>
+            </div>
+
+            <div>
+                <div class="result-item-label">Students Needed to Meet Goal</div>
+                <div class="result-item-value" id="needText">0</div>
+            </div>
+
+            <div>
+                <div class="result-item-label">Shortfall / Surplus</div>
+                <div class="result-item-value" id="deltaText">–</div>
+            </div>
+
+            <div>
+                <div class="result-item-label">Goal Threshold</div>
+                <div class="result-item-value" id="goalThresholdText">–</div>
+            </div>
+        </div>
+
+        <p class="note">
+            Figures are based on total enrollment × goal%. “Students needed” is rounded up to the next whole student.
+        </p>
+    </div>
+</div>
+
+<script>
+(function () {
+    const nf0 = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
+    const nf1 = new Intl.NumberFormat("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+    const nf4 = new Intl.NumberFormat("en-US", { minimumFractionDigits: 4, maximumFractionDigits: 4 });
+
+    const totalEl = document.getElementById("total");
+    const goalEl = document.getElementById("goal");
+    const currentEl = document.getElementById("current");
+    const targetEl = document.getElementById("target");
+
+    const percentPill = document.getElementById("percentPill");
+    const percentText = document.getElementById("percentText");
+    const needText = document.getElementById("needText");
+    const deltaText = document.getElementById("deltaText");
+    const goalThresholdText = document.getElementById("goalThresholdText");
+    const statusTag = document.getElementById("statusTag");
+
+    function calculate() {
+        const total = Number(totalEl.value) || 0;
+        const goalPct = Number(goalEl.value) || 0;
+        const current = Number(currentEl.value) || 0;
+
+        const goal = Math.min(Math.max(goalPct, 0), 100) / 100;
+
+        const target = total * goal;
+        targetEl.value = total > 0 ? Math.round(target) : "";
+
+        let percent = 0;
+        if (total > 0) {
+            percent = (current / total) * 100;
+        }
+
+        const need = Math.max(0, Math.ceil(target - current));
+        const delta = current - target;
+
+        // Percentage display
+        percentText.textContent = total > 0 ? nf4.format(percent) + "%" : "—";
+
+        // Need text
+        needText.textContent = total > 0 ? nf0.format(need) : "—";
+
+        // Threshold / target text
+        goalThresholdText.textContent = total > 0
+            ? nf0.format(Math.round(target)) + " students"
+            : "—";
+
+        // Delta text
+        if (total === 0) {
+            deltaText.textContent = "—";
+        } else if (delta >= 0) {
+            deltaText.textContent = "+" + nf0.format(Math.round(delta)) + " students (above goal)";
+        } else {
+            deltaText.textContent = nf0.format(Math.round(delta)) + " students (below goal)";
+        }
+
+        // Status & pill style
+        percentPill.classList.remove("ok", "warn");
+        if (percent >= goalPct && total > 0) {
+            percentPill.classList.add("ok");
+            statusTag.textContent = "Goal Met";
+        } else {
+            percentPill.classList.add("warn");
+            statusTag.textContent = "Below Goal";
+        }
+    }
+
+    [totalEl, goalEl, currentEl].forEach(el => {
+        el.addEventListener("input", calculate);
+    });
+
+    calculate();
+})();
+</script>
+
+</body>
+</html>
